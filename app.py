@@ -51,7 +51,7 @@ def get_age_bucket(age_str):
     if "岁" in age_str: return "老年 (7岁以上)"
     return "未知"
 
-excel_file = "cats.xlsx"
+    excel_file = "cats.xlsx"
 
     # 标准列名绑定
     name_col = "Name (姓名)" if "Name (姓名)" in df.columns else df.columns[0]
