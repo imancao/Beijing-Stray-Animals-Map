@@ -31,6 +31,35 @@ with st.sidebar.expander("🔐 管理员登录通道"):
 # ================= 主页面结构 =================
 st.title("北京流浪动物寻家地图 📍")
 st.markdown("##### *每一个饱经风霜的小生命，都在等一个温暖的家。*")
+
+# 🌟=== 新增：群智涌现——强行刷红的巨大按钮 ===🌟
+st.write("")
+with st.container():
+    st.info("💡 发现身边的流浪动物需要曝光寻家？请点击下方按钮提交，我们会定期审核并更新进地图！")
+    st.markdown("""
+        <style>
+        div.stButton > button:first-child, div[data-testid="stLinkButton"] > a {
+            background-color: #FF5A5F !important;
+            color: white !important;
+            border-color: #FF5A5F !important;
+            font-weight: bold !important;
+            font-size: 16px !important;
+            padding: 0.5rem 1rem !important;
+            transition: background-color 0.3s ease !important;
+        }
+        div.stButton > button:first-child:hover, div[data-testid="stLinkButton"] > a:hover {
+            background-color: #E0484D !important;
+            border-color: #E0484D !important;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+    
+    st.link_button(
+        label="🔥 提交新的救助信息 (点此填写腾讯文档/金数据表单)", 
+        url="https://docs.qq.com/form/page/YOUR_FORM_ID",  
+        use_container_width=True,
+        type="primary"
+    )
 st.write("---")
 
 # 北京各行政区中心经纬度字典
@@ -51,7 +80,14 @@ def get_age_bucket(age_str):
     if "岁" in age_str: return "老年 (7岁以上)"
     return "未知"
 
-    excel_file = "cats.xlsx"
+# 🌟=== 改为云端标准相对路径 ===🌟
+excel_file = "cats.xlsx"
+
+if not os.path.exists(excel_file):
+    st.error(f"❌ 未找到数据文件，请确保 {excel_file} 已上传到 GitHub 仓库根目录中。")
+else:
+    df = pd.read_excel(excel_file).fillna("未填写")
+    df.columns = df.columns.astype(str).str.strip()
 
     # 标准列名绑定
     name_col = "Name (姓名)" if "Name (姓名)" in df.columns else df.columns[0]
@@ -84,7 +120,7 @@ def get_age_bucket(age_str):
     sel_district = st.sidebar.selectbox("3. 选择区域 (北京各区):", ["全部"] + list(BEIJING_DISTRICTS.keys()))
     sel_age = st.sidebar.selectbox("4. 选择年龄段:", ["全部", "幼年 (1岁以下)", "青年 (1-2岁)", "成年 (3-6岁)", "老年 (7岁以上)"])
 
-    # 【完美修复】精准数据过滤
+    # 精准数据过滤
     f_df = df.copy()
     if sel_species != "全部" and species_col: f_df = f_df[f_df[species_col].str.strip() == sel_species]
     if sel_gender != "全部" and gender_col: f_df = f_df[f_df[gender_col].str.strip() == sel_gender]
