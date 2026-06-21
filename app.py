@@ -51,16 +51,7 @@ def get_age_bucket(age_str):
     if "岁" in age_str: return "老年 (7岁以上)"
     return "未知"
 
-# 锁死绝对路径
-excel_file = r"C:\Users\by_ca\Projects\beijing-cow-cat-adoption\cats.xlsx"
-if not os.path.exists(excel_file):
-    excel_file = r"C:\Users\by_ca\Projects\beijing-cow-cat-adoption\cats.xlsx.xlsx"
-
-if not os.path.exists(excel_file):
-    st.error("❌ 未找到数据文件 cats.xlsx")
-else:
-    df = pd.read_excel(excel_file).fillna("未填写")
-    df.columns = df.columns.astype(str).str.strip()
+excel_file = "cats.xlsx"
 
     # 标准列名绑定
     name_col = "Name (姓名)" if "Name (姓名)" in df.columns else df.columns[0]
